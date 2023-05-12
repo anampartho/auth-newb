@@ -2,6 +2,9 @@ const express = require("express");
 const volleyball = require("volleyball");
 
 const app = express();
+
+const auth = require("./auth");
+
 app.use(volleyball);
 
 app.get("/", (req, res) => {
@@ -9,6 +12,8 @@ app.get("/", (req, res) => {
     message: "Hello World!",
   });
 });
+
+app.use("/auth", auth);
 
 function notFound(req, res, next) {
   res.status(404);
