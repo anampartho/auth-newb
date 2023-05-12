@@ -6,6 +6,7 @@ const app = express();
 const auth = require("./auth");
 
 app.use(volleyball);
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.json({
