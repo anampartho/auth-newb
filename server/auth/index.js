@@ -52,7 +52,8 @@ router.post("/signup", (req, res, next) => {
             };
 
             users.insert(newUser).then((insertedUser) => {
-              // TODO: Remove the hashed password from the response
+              // TODO: Check if there is a way to do this using the mongodb insert
+              delete insertedUser.password;
               res.json(insertedUser);
             });
           });
