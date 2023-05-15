@@ -45,7 +45,7 @@ router.post("/signup", (req, res, next) => {
           next(error);
         } else {
           // hash the password
-          bcrypt.hash(value.password, 12).then((hashedPassword) => {
+          bcrypt.hash(value.password.trim(), 12).then((hashedPassword) => {
             const newUser = {
               username: value.username,
               password: hashedPassword,
