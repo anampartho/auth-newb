@@ -11,6 +11,7 @@ const users = db.get("users");
 users.createIndex("username", { unique: true });
 
 const schema = Joi.object({
+  // TODO: Check for empty strings
   username: Joi.string()
     .pattern(new RegExp("^[a-zA-Z0-9_]+$"))
     .min(3)
@@ -47,6 +48,7 @@ router.post("/signup", (req, res, next) => {
           bcrypt.hash(value.password, 12).then((hashedPassword) => {
             const newUser = {
               username: value.username,
+              // TODO: Remove the hashed password from the response
               password: hashedPassword,
             };
 
