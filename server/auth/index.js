@@ -12,11 +12,12 @@ users.createIndex("username", { unique: true });
 
 const schema = Joi.object({
   username: Joi.string()
+    .trim()
     .pattern(new RegExp("^[a-zA-Z0-9_]+$"))
     .min(3)
     .max(30)
     .required(),
-  password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")),
+  password: Joi.string().trim().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")),
 });
 
 router.get("/", (req, res) => {
@@ -51,6 +52,8 @@ router.post("/signup", (req, res, next) => {
             };
 
             users.insert(newUser).then((insertedUser) => {
+              // TODO: Check if there is a way to do this using the mongodb insert
+              delete insertedUser.password;
               res.json(insertedUser);
             });
           });
