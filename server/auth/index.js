@@ -1,5 +1,6 @@
 const express = require("express");
 const Joi = require("joi");
+const bcrypt = require("bcryptjs");
 const router = express.Router();
 
 // Databse
@@ -35,7 +36,19 @@ router.post("/signup", (req, res, next) => {
         username: value.username,
       })
       .then((user) => {
-        res.json({ user });
+        if (user) {
+          // there is a user in the db - send an error
+          const error = new Error(
+            "Username already taken. Please choose a unique username."
+          );
+          next(error);
+        } else {
+          // hash the password
+          bcrypt.hash(value.password, 12).then((hashedPassword) => {
+            res.json({ hashedPassword });
+          });
+          // insert the user to the db
+        }
       });
   }
 });
