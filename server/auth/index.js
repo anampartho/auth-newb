@@ -48,11 +48,11 @@ router.post("/signup", (req, res, next) => {
           bcrypt.hash(value.password, 12).then((hashedPassword) => {
             const newUser = {
               username: value.username,
-              // TODO: Remove the hashed password from the response
               password: hashedPassword,
             };
 
             users.insert(newUser).then((insertedUser) => {
+              // TODO: Remove the hashed password from the response
               res.json(insertedUser);
             });
           });
