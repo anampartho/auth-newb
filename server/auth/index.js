@@ -29,6 +29,7 @@ router.get("/", (req, res) => {
 router.post("/signup", (req, res, next) => {
   const { error, value } = schema.validate(req.body);
   if (error) {
+    res.status(406);
     next(error);
   } else {
     // res.json(value);
@@ -42,6 +43,7 @@ router.post("/signup", (req, res, next) => {
           const error = new Error(
             "Username already taken. Please choose a unique username."
           );
+          res.status(409);
           next(error);
         } else {
           // hash the password
