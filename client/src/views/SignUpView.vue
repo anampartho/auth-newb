@@ -68,6 +68,8 @@
 // @ is an alias to /src
 import Joi from 'joi';
 
+const SIGNUP_URL = 'http://localhost:5000/auth/signup';
+
 const schema = Joi.object({
   username: Joi.string()
     .trim()
@@ -110,7 +112,33 @@ export default {
       const { user } = this;
 
       if (this.validUser()) {
-        console.log({ user });
+        const body = {
+          username: user.username,
+          password: user.password
+        };
+
+        fetch(SIGNUP_URL, {
+          method: 'POST',
+          body: JSON.stringify(body),
+          headers: {
+            'content-type': 'application/json'
+          }
+        })
+          .then((res) => {
+            if (res.ok) {
+              return res.json();
+            }
+
+            return res.json().then((err) => {
+              throw new Error(err.message);
+            });
+          })
+          .then((createdUser) => {
+            console.log({ createdUser });
+          })
+          .catch((err) => {
+            console.log({ err });
+          });
       }
     },
     validUser() {
