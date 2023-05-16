@@ -29,7 +29,7 @@ router.get("/", (req, res) => {
 router.post("/signup", (req, res, next) => {
   const { error, value } = schema.validate(req.body);
   if (error) {
-    res.status(406);
+    res.status(422);
     next(error);
   } else {
     // res.json(value);
