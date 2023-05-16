@@ -137,7 +137,7 @@ export default {
             console.log({ createdUser });
           })
           .catch((err) => {
-            console.log({ err });
+            this.errorMessage = err.message;
           });
       }
     },
