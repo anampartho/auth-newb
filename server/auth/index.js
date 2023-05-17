@@ -1,6 +1,7 @@
 const express = require("express");
 const Joi = require("joi");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const router = express.Router();
 
 // Databse
@@ -62,6 +63,50 @@ router.post("/signup", (req, res, next) => {
           // insert the user to the db
         }
       });
+  }
+});
+
+const respondError422 = (res, next) => {
+  res.status(422);
+  const loginError = new Error("Unable to login 😢");
+  next(loginError);
+};
+
+router.post("/login", (req, res, next) => {
+  const { error, value } = schema.validate(req.body);
+  if (error) {
+    respondError422(res, next);
+  } else {
+    users.findOne({ username: value.username }).then((user) => {
+      if (user) {
+        bcrypt.compare(value.password, user.password).then((match) => {
+          if (match) {
+            const userPayload = {
+              username: user.username,
+              id: user._id,
+            };
+            jwt.sign(
+              userPayload,
+              process.env.TOKEN_SECRET,
+              {
+                expiresIn: "1d",
+              },
+              (err, token) => {
+                if (err) {
+                  respondError422(res, next);
+                } else {
+                  res.json({ token });
+                }
+              }
+            );
+          } else {
+            respondError422(res, next);
+          }
+        });
+      } else {
+        respondError422(res, next);
+      }
+    });
   }
 });
 
