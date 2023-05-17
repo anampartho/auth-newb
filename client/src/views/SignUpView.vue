@@ -1,3 +1,14 @@
+<style>
+.submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.loading-icon {
+  height: 21px;
+  width: auto;
+}
+</style>
 <template>
   <div class="sign-up">
     <div class="jumbotron jumbotron-fluid py-4 mt-4">
@@ -57,7 +68,19 @@
             </div>
           </div>
 
-          <button type="submit" class="btn btn-primary mt-4">Sign Up</button>
+          <button
+            type="submit"
+            class="btn btn-primary mt-4 submit-btn"
+            :disabled="signingUp"
+          >
+            Sign Up
+            <img
+              src="../assets/loading.svg"
+              alt="Loading"
+              class="loading-icon"
+              v-if="signingUp"
+            />
+          </button>
         </fieldset>
       </form>
     </div>
@@ -67,6 +90,7 @@
 <script>
 // @ is an alias to /src
 import Joi from 'joi';
+// import LoadingIcon from '../assets/loading.svg';
 
 const SIGNUP_URL = 'http://localhost:5000/auth/signup';
 
@@ -91,6 +115,7 @@ export default {
   name: 'SignUpView',
   data: () => ({
     errorMessage: '',
+    signingUp: false,
     user: {
       username: '',
       password: '',
@@ -109,6 +134,7 @@ export default {
     // signup handler
     signup() {
       this.errorMessage = '';
+      this.signingUp = true;
       const { user } = this;
 
       if (this.validUser()) {
@@ -133,13 +159,16 @@ export default {
               throw new Error(err.message);
             });
           })
-          .then((createdUser) => {
-            console.log({ createdUser });
+          .then(() => {
+            this.signingUp = false;
+            this.$router.push('/login');
           })
           .catch((err) => {
+            this.signingUp = false;
             this.errorMessage = err.message;
           });
       }
+      this.signingUp = false;
     },
     validUser() {
       const { user } = this;
