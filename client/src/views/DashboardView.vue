@@ -41,7 +41,7 @@ export default {
         if (res.user) {
           this.user = res.user;
         } else {
-          localStorage.removeItem('token');
+          this.logout();
         }
       });
   },
