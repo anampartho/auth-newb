@@ -22,4 +22,14 @@ const checkTokenSetUser = (req, res, next) => {
   }
 };
 
-module.exports = { checkTokenSetUser };
+const isLoggedIn = (req, res, next) => {
+  if (req.user) {
+    next();
+  } else {
+    const error = new Error("Unauthorized");
+    res.status(401);
+    next(error);
+  }
+};
+
+module.exports = { checkTokenSetUser, isLoggedIn };
