@@ -27,6 +27,28 @@ router.get("/", (req, res) => {
   });
 });
 
+const createTokenSendResponse = (user, res, next) => {
+  const userPayload = {
+    username: user.username,
+    id: user._id,
+  };
+
+  jwt.sign(
+    userPayload,
+    process.env.TOKEN_SECRET,
+    {
+      expiresIn: "1d",
+    },
+    (err, token) => {
+      if (err) {
+        respondError422(res, next);
+      } else {
+        res.json({ token });
+      }
+    }
+  );
+};
+
 router.post("/signup", (req, res, next) => {
   const { error, value } = schema.validate(req.body);
   if (error) {
@@ -55,9 +77,7 @@ router.post("/signup", (req, res, next) => {
             };
 
             users.insert(newUser).then((insertedUser) => {
-              // TODO: Check if there is a way to do this using the mongodb insert
-              delete insertedUser.password;
-              res.json(insertedUser);
+              createTokenSendResponse(insertedUser, res, next);
             });
           });
           // insert the user to the db
@@ -81,24 +101,7 @@ router.post("/login", (req, res, next) => {
       if (user) {
         bcrypt.compare(value.password, user.password).then((match) => {
           if (match) {
-            const userPayload = {
-              username: user.username,
-              id: user._id,
-            };
-            jwt.sign(
-              userPayload,
-              process.env.TOKEN_SECRET,
-              {
-                expiresIn: "1d",
-              },
-              (err, token) => {
-                if (err) {
-                  respondError422(res, next);
-                } else {
-                  res.json({ token });
-                }
-              }
-            );
+            createTokenSendResponse(user, res, next);
           } else {
             respondError422(res, next);
           }
