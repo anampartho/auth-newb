@@ -1,5 +1,21 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
+const loggedInRedirect = (to, from, next) => {
+  if (localStorage.getItem('token')) {
+    next('/dashboard');
+  } else {
+    next();
+  }
+};
+
+const notLoggedInRedirect = (to, from, next) => {
+  if (!localStorage.getItem('token')) {
+    next('/login');
+  } else {
+    next();
+  }
+};
+
 const routes = [
   {
     path: '/',
@@ -9,12 +25,20 @@ const routes = [
   {
     path: '/signup',
     name: 'signup',
-    component: () => import('../views/SignUpView.vue')
+    component: () => import('../views/SignUpView.vue'),
+    beforeEnter: loggedInRedirect
   },
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/LoginView.vue')
+    component: () => import('../views/LoginView.vue'),
+    beforeEnter: loggedInRedirect
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: () => import('../views/DashboardView.vue'),
+    beforeEnter: notLoggedInRedirect
   }
 ];
 
