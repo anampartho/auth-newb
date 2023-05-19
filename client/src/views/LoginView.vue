@@ -134,6 +134,7 @@ export default {
           .then((res) => {
             this.logginIn = false;
             localStorage.setItem('token', res.token);
+            this.$router.push('/dashboard');
           })
           .catch((err) => {
             this.logginIn = false;
