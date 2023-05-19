@@ -1,7 +1,7 @@
 <style>
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
   margin-top: 24px;
 }
@@ -34,27 +34,27 @@
     </div>
     <div class="container">
       <div class="row">
-        <h2 class="display-6 mt-4 p-0">Your Notes</h2>
+        <h2 class="display-6 mt-4 p-0">
+          Your Notes
+          <a
+            class="btn btn-primary"
+            type="button"
+            data-toggle="modal"
+            data-target="#exampleModal"
+            @click.prevent="goToAddNote()"
+            @keydown.prevent="goToAddNote()"
+          >
+            ADD NEW NOTE
+          </a>
+        </h2>
       </div>
       <div class="row card-grid">
         <div class="card p-0" v-for="note in notes" :key="note._id">
           <div class="card-header">{{ note.title }}</div>
           <div class="card-body">
-            <p class="card-text">
-              {{ note.description }}
-            </p>
+            <p class="card-text" v-html="renderMarkdown(note.description)"></p>
           </div>
         </div>
-        <a
-          class="card text-white bg-primary p-0 add-new-note"
-          type="button"
-          data-toggle="modal"
-          data-target="#exampleModal"
-          @click.prevent="goToAddNote()"
-          @keydown.prevent="goToAddNote()"
-        >
-          ADD NEW NOTE
-        </a>
       </div>
     </div>
   </div>
@@ -62,6 +62,9 @@
 
 <script>
 // @ is an alias to /src
+import MarkdownIt from 'markdown-it';
+import MDEmoji from 'markdown-it-emoji';
+
 const API_URL = 'http://localhost:5000';
 const NOTES_URL = 'http://localhost:5000/api/v1/notes';
 
@@ -109,6 +112,12 @@ export default {
         .then((res) => {
           this.notes = res;
         });
+    },
+    renderMarkdown(text) {
+      const md = new MarkdownIt();
+      md.use(MDEmoji);
+
+      return md.render(text);
     }
   }
 };

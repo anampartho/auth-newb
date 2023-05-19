@@ -11,6 +11,8 @@
     "bootswatch": "^5.2.3",
     "core-js": "^3.8.3",
     "joi": "^17.9.2",
+    "markdown-it": "^13.0.1",
+    "markdown-it-emoji": "^2.0.2",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3"
   },

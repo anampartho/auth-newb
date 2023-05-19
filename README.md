@@ -53,7 +53,7 @@ Add JWT-based authentication to a Node/Express/Mongo app.
 
 ### Authorization:
 
-- [ ] Visitors can only see the homepage
+- [x] Visitors can only see the homepage
   - [x] checkTokenSetUser middleware
     - [x] get token from Authorization header
       - [x] if defined ---
@@ -63,8 +63,8 @@ Add JWT-based authentication to a Node/Express/Mongo app.
   - [x] isLoggedIn middleware
     - [x] if req.user is set - move along
     - [x] else - send an unauthorized error message
-  - [ ] redirect to login form
-- [ ] Logged in users can only see their page
+  - [x] redirect to login form
+- [x] Logged in users can only see their page
 - [x] Create notes form on client
   - [x] Title
   - [x] Description
@@ -78,8 +78,8 @@ Add JWT-based authentication to a Node/Express/Mongo app.
   - [x] Must be logged in
   - [x] Logged in Users Can request all their notes
     - [x] Get all notes in DB with logged in users user_id
-- [ ] List all notes on client
-  - [ ] Render description with Markdown
+- [x] List all notes on client
+  - [x] Render description with Markdown
 
 ## STRETCH
 
