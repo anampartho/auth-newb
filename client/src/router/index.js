@@ -39,6 +39,12 @@ const routes = [
     name: 'dashboard',
     component: () => import('../views/DashboardView.vue'),
     beforeEnter: notLoggedInRedirect
+  },
+  {
+    path: '/notes/add',
+    name: 'addNotes',
+    component: () => import('../views/AddNoteView.vue'),
+    beforeEnter: notLoggedInRedirect
   }
 ];
 
