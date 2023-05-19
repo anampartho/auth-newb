@@ -13,11 +13,27 @@
   text-align: center;
   text-decoration: none;
 }
+
+.submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.loading-icon {
+  height: 21px;
+  width: auto;
+}
 </style>
 <template>
   <div class="dashboard">
     <div class="jumbotron jumbotron-fluid py-4 mt-4">
       <h1 class="display-4">Add a new Note</h1>
+      <div v-if="errorMessage" class="alert alert-danger mt-4" role="alert">
+        {{ errorMessage }}
+      </div>
+      <div v-if="successMessage" class="alert alert-success mt-4" role="alert">
+        {{ successMessage }}
+      </div>
       <!-- <p class="lead mt-4">
         <a
           class="btn btn-primary btn-lg"
@@ -62,13 +78,18 @@
               >Add a description of your note.</small
             >
           </div>
-          <button type="submit" class="btn btn-primary mt-4 submit-btn">
+          <button
+            type="submit"
+            class="btn btn-primary mt-4 submit-btn"
+            :disabled="addingNote"
+          >
             Add Note
-            <!-- <img
+            <img
               src="../assets/loading.svg"
               alt="Loading"
               class="loading-icon"
-            /> -->
+              v-if="addingNote"
+            />
           </button>
         </fieldset>
       </form>
@@ -84,10 +105,13 @@ const NOTES_URL = 'http://localhost:5000/api/v1/notes';
 export default {
   name: 'AddNotesView',
   data: () => ({
+    errorMessage: '',
+    successMessage: '',
     note: {
       title: '',
       description: ''
-    }
+    },
+    addingNote: false
   }),
   mounted() {
     fetch(API_URL, {
@@ -112,6 +136,7 @@ export default {
     },
     addNote() {
       const { note } = this;
+      this.addingNote = true;
       const body = {
         title: note.title,
         description: note.description
@@ -126,7 +151,18 @@ export default {
         body: JSON.stringify(body)
       })
         .then((res) => res.json())
-        .then((res) => console.log(res));
+        .then(() => {
+          this.note = {
+            title: '',
+            description: ''
+          };
+          this.successMessage = 'Note added successfully!';
+          this.addingNote = false;
+
+          setTimeout(() => {
+            this.successMessage = '';
+          }, 2000);
+        });
     }
   }
 };
