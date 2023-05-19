@@ -159,9 +159,10 @@ export default {
               throw new Error(err.message);
             });
           })
-          .then(() => {
+          .then((res) => {
             this.signingUp = false;
-            this.$router.push('/login');
+            localStorage.setItem('token', res.token);
+            this.$router.push('/dashboard');
           })
           .catch((err) => {
             this.signingUp = false;
