@@ -37,16 +37,14 @@
         <h2 class="display-6 mt-4 p-0">Your Notes</h2>
       </div>
       <div class="row card-grid">
-        <!-- <div class="card p-0">
-          <div class="card-header">Header</div>
+        <div class="card p-0" v-for="note in notes" :key="note._id">
+          <div class="card-header">{{ note.title }}</div>
           <div class="card-body">
-            <h4 class="card-title">Primary card title</h4>
             <p class="card-text">
-              Some quick example text to build on the card title and make up the
-              bulk of the card's content.
+              {{ note.description }}
             </p>
           </div>
-        </div> -->
+        </div>
         <a
           class="card text-white bg-primary p-0 add-new-note"
           type="button"
@@ -65,15 +63,13 @@
 <script>
 // @ is an alias to /src
 const API_URL = 'http://localhost:5000';
+const NOTES_URL = 'http://localhost:5000/api/v1/notes';
 
 export default {
   name: 'DashboardView',
   data: () => ({
     user: {},
-    note: {
-      title: '',
-      description: ''
-    }
+    notes: []
   }),
   mounted() {
     fetch(API_URL, {
@@ -87,6 +83,7 @@ export default {
         console.log({ res });
         if (res.user) {
           this.user = res.user;
+          this.getNotes();
         } else {
           this.logout();
         }
@@ -99,6 +96,19 @@ export default {
     },
     goToAddNote() {
       this.$router.push('/notes/add');
+    },
+    getNotes() {
+      fetch(NOTES_URL, {
+        method: 'GET',
+        headers: {
+          authorization: `Bearer ${localStorage.getItem('token')}`,
+          'content-type': 'application/json'
+        }
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          this.notes = res;
+        });
     }
   }
 };
