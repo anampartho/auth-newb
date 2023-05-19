@@ -7,10 +7,12 @@ require("dotenv").config();
 const app = express();
 
 const auth = require("./auth");
+const { checkTokenSetUser } = require("./auth/middlewares");
 
 app.use(volleyball);
 app.use(cors());
 app.use(express.json());
+app.use(checkTokenSetUser);
 
 app.get("/", (req, res) => {
   res.json({
