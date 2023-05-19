@@ -17,6 +17,7 @@ app.use(checkTokenSetUser);
 app.get("/", (req, res) => {
   res.json({
     message: "Hello World!",
+    user: req.user,
   });
 });
 
