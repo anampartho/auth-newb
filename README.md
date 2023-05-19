@@ -65,15 +65,15 @@ Add JWT-based authentication to a Node/Express/Mongo app.
     - [x] else - send an unauthorized error message
   - [ ] redirect to login form
 - [ ] Logged in users can only see their page
-- [ ] Create notes form on client
-  - [ ] Title
-  - [ ] Description
-- [ ] POST /api/v1/notes
-  - [ ] Must be logged in
-  - [ ] Logged in Users Can Create Notes
-    - [ ] Title
-    - [ ] Description -- markdown
-    - [ ] Set user_id on server with logged in users id
+- [x] Create notes form on client
+  - [x] Title
+  - [x] Description
+- [x] POST /api/v1/notes
+  - [x] Must be logged in
+  - [x] Logged in Users Can Create Notes
+    - [x] Title
+    - [x] Description -- markdown
+    - [x] Set user_id on server with logged in users id
 - [ ] GET /api/v1/notes
   - [x] Must be logged in
   - [ ] Logged in Users Can request all their notes
