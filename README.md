@@ -91,13 +91,6 @@ Add JWT-based authentication to a Node/Express/Mongo app.
 - [ ] View user profile
 - [ ] Users can mark notes as public
   - [ ] Notes show up on profile
-
-## Admin Page:
-
-- [ ] Admin page that lists all users
-  - [ ] admin table with user_id
-  - [ ] de-activate users
-- [ ] Admin can see any page on site
 - [ ] Rate limiting
   - [ ] Prevent brute force logins
   - [ ] Lock out account after too many login attempts
@@ -107,6 +100,13 @@ Add JWT-based authentication to a Node/Express/Mongo app.
 - [ ] Forgot password
   - [ ] Reset with email
   - [ ] Reset by answering security questions
+
+## Admin Page:
+
+- [ ] Admin page that lists all users
+  - [ ] admin table with user_id
+  - [ ] de-activate users
+- [ ] Admin can see any page on site
 - [ ] Testing...
 
 ## To deploy everything to the same heroku instance
