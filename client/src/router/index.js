@@ -1,15 +1,37 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import store from '@/store';
+import axios from 'axios';
+import { VALIDATE_USER_URL } from '@/config/api-urls';
 
-const loggedInRedirect = (to, from, next) => {
-  if (localStorage.getItem('token')) {
+const validUserCheck = async () => {
+  const { user } = store.state.auth;
+  if (user?.token) {
+    const validityCheck = await axios.get(VALIDATE_USER_URL, {
+      headers: {
+        Authorization: `Bearer ${user.token}`
+      }
+    });
+
+    return validityCheck.data;
+  }
+
+  return false;
+};
+
+const loggedInRedirect = async (to, from, next) => {
+  const isValidUser = await validUserCheck();
+
+  if (isValidUser) {
     next('/dashboard');
   } else {
     next();
   }
 };
 
-const notLoggedInRedirect = (to, from, next) => {
-  if (!localStorage.getItem('token')) {
+const notLoggedInRedirect = async (to, from, next) => {
+  const isValidUser = await validUserCheck();
+
+  if (!isValidUser) {
     next('/login');
   } else {
     next();
