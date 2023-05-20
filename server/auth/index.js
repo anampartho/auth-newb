@@ -113,4 +113,12 @@ router.post("/login", (req, res, next) => {
   }
 });
 
+router.get("/validate", (req, res, next) => {
+  if (req.user) {
+    res.json(true);
+  } else {
+    res.json(false);
+  }
+});
+
 module.exports = router;
