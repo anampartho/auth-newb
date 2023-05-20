@@ -120,12 +120,20 @@ export default {
     }
   }),
   computed: {
-    ...mapState('auth', ['errorMessage'])
+    ...mapState('auth', ['errorMessage', 'loggedIn'])
   },
   watch: {
     user: {
       handler() {
         this.setErrorMessage('');
+      },
+      deep: true
+    },
+    loggedIn: {
+      handler() {
+        if (this.loggedIn) {
+          this.$router.push('/dashboard');
+        }
       },
       deep: true
     }

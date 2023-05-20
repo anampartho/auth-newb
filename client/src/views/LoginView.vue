@@ -109,10 +109,18 @@ export default {
         this.setErrorMessage('');
       },
       deep: true
+    },
+    loggedIn: {
+      handler() {
+        if (this.loggedIn) {
+          this.$router.push('/dashboard');
+        }
+      },
+      deep: true
     }
   },
   computed: {
-    ...mapState('auth', ['errorMessage'])
+    ...mapState('auth', ['errorMessage', 'loggedIn'])
   },
   methods: {
     ...mapMutations('auth', ['setErrorMessage']),
