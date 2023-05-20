@@ -34,16 +34,6 @@
       <div v-if="successMessage" class="alert alert-success mt-4" role="alert">
         {{ successMessage }}
       </div>
-      <!-- <p class="lead mt-4">
-        <a
-          class="btn btn-primary btn-lg"
-          role="button"
-          @click.prevent="logout"
-          @keydown.prevent="logout"
-          tabindex="0"
-          >Logout</a
-        >
-      </p> -->
 
       <form data-bitwarden-watching="1" @submit.prevent="addNote">
         <fieldset>
@@ -98,9 +88,11 @@
 </template>
 
 <script>
+import axios from 'axios';
+import { NOTES_BASE_URL } from '@/config/api-urls';
+import { mapState } from 'vuex';
+
 // @ is an alias to /src
-const API_URL = 'http://localhost:5000';
-const NOTES_URL = 'http://localhost:5000/api/v1/notes';
 
 export default {
   name: 'AddNotesView',
@@ -113,28 +105,11 @@ export default {
     },
     addingNote: false
   }),
-  mounted() {
-    fetch(API_URL, {
-      method: 'GET',
-      headers: {
-        authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.user) {
-          this.user = res.user;
-        } else {
-          this.logout();
-        }
-      });
+  computed: {
+    ...mapState('auth', ['user'])
   },
   methods: {
-    logout() {
-      localStorage.removeItem('token');
-      this.$router.push('/login');
-    },
-    addNote() {
+    async addNote() {
       const { note } = this;
       this.addingNote = true;
       const body = {
@@ -142,27 +117,27 @@ export default {
         description: note.description
       };
 
-      fetch(NOTES_URL, {
-        method: 'POST',
-        headers: {
-          authorization: `Bearer ${localStorage.getItem('token')}`,
-          'content-type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      })
-        .then((res) => res.json())
-        .then(() => {
-          this.note = {
-            title: '',
-            description: ''
-          };
-          this.successMessage = 'Note added successfully!';
-          this.addingNote = false;
-
-          setTimeout(() => {
-            this.successMessage = '';
-          }, 2000);
+      try {
+        await axios.post(NOTES_BASE_URL, body, {
+          headers: {
+            Authorization: `Bearer ${this.user.token}`
+          }
         });
+
+        this.note = {
+          title: '',
+          description: ''
+        };
+
+        this.successMessage = 'Note added successfully!';
+        this.addingNote = false;
+
+        setTimeout(() => {
+          this.successMessage = '';
+        }, 2000);
+      } catch (error) {
+        this.errorMessage = error.response.data.message || error.message;
+      }
     }
   }
 };
