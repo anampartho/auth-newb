@@ -8,6 +8,11 @@
   height: 21px;
   width: auto;
 }
+.progress {
+  height: 5px;
+  border-radius: 0;
+  margin-top: 10px;
+}
 </style>
 <template>
   <div class="sign-up">
@@ -47,9 +52,29 @@
                 required
                 v-model="user.password"
               />
+
               <small id="passwordHelp"
                 >Password must be at least 6 characters long.</small
               >
+
+              <div class="progress">
+                <div
+                  class="progress-bar"
+                  :class="{
+                    'bg-danger': passwordStrengthPercentage <= 25,
+                    'bg-warning': passwordStrengthPercentage <= 50,
+                    'bg-info': passwordStrengthPercentage <= 75,
+                    'bg-success': passwordStrengthPercentage > 75
+                  }"
+                  role="progressbar"
+                  :style="{
+                    width: passwordStrengthPercentage + '%'
+                  }"
+                  :aria-valuenow="passwordStrengthPercentage"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                ></div>
+              </div>
             </div>
             <div class="form-group col-md-6">
               <label class="form-label mt-4">Confirm Password</label>
@@ -91,6 +116,7 @@
 // @ is an alias to /src
 import { mapActions, mapMutations, mapState } from 'vuex';
 import Joi from 'joi';
+import { passwordStrength as checkPasswordStrength } from 'check-password-strength';
 
 const schema = Joi.object({
   username: Joi.string()
@@ -117,17 +143,31 @@ export default {
       username: '',
       password: '',
       confirmPassword: ''
-    }
+    },
+    passwordStrength: null,
+    passwordStrengthPercentage: 0
   }),
   computed: {
     ...mapState('auth', ['errorMessage', 'loggedIn'])
   },
   watch: {
     user: {
-      handler() {
+      handler(change) {
         this.setErrorMessage('');
+        if (change.password.length) {
+          this.passwordStrength = checkPasswordStrength(this.user.password);
+        } else {
+          this.passwordStrength = null;
+        }
       },
       deep: true
+    },
+    passwordStrength: {
+      handler() {
+        this.passwordStrengthPercentage = this.passwordStrength
+          ? (this.passwordStrength.id + 1) * 25
+          : 0;
+      }
     },
     loggedIn: {
       handler() {

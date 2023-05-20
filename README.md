@@ -86,6 +86,8 @@ Add JWT-based authentication to a Node/Express/Mongo app.
 
 ## STRETCH
 
+- [x] Password strength meter!
+  - [ ] Add validation to align with password strength meter
 - [ ] Store date of note in DB
   - [ ] Sort notes by date created.
 - [ ] View user profile
@@ -94,9 +96,7 @@ Add JWT-based authentication to a Node/Express/Mongo app.
 - [ ] Rate limiting
   - [ ] Prevent brute force logins
   - [ ] Lock out account after too many login attempts
-- [ ] Password strength meter!
-- [ ] reCaptcha for signup/login
-- [ ] Password reset with email
+  - [ ] reCaptcha for signup/login
 - [ ] Forgot password
   - [ ] Reset with email
   - [ ] Reset by answering security questions
