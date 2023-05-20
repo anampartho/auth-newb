@@ -16,7 +16,7 @@
       <div v-if="errorMessage" class="alert alert-danger mt-4" role="alert">
         {{ errorMessage }}
       </div>
-      <form data-bitwarden-watching="1" @submit.prevent="signup">
+      <form data-bitwarden-watching="1" @submit.prevent="submitHandler">
         <fieldset>
           <div class="form-group">
             <label class="form-label mt-4">Username</label>
@@ -89,10 +89,8 @@
 
 <script>
 // @ is an alias to /src
+import { mapActions, mapMutations, mapState } from 'vuex';
 import Joi from 'joi';
-// import LoadingIcon from '../assets/loading.svg';
-
-const SIGNUP_URL = 'http://localhost:5000/auth/signup';
 
 const schema = Joi.object({
   username: Joi.string()
@@ -114,7 +112,6 @@ const schema = Joi.object({
 export default {
   name: 'SignUpView',
   data: () => ({
-    errorMessage: '',
     signingUp: false,
     user: {
       username: '',
@@ -122,18 +119,21 @@ export default {
       confirmPassword: ''
     }
   }),
+  computed: {
+    ...mapState('auth', ['errorMessage'])
+  },
   watch: {
     user: {
       handler() {
-        this.errorMessage = '';
+        this.setErrorMessage('');
       },
       deep: true
     }
   },
   methods: {
-    // signup handler
-    signup() {
-      this.errorMessage = '';
+    ...mapActions('auth', ['signUp']),
+    ...mapMutations('auth', ['setErrorMessage']),
+    submitHandler() {
       this.signingUp = true;
       const { user } = this;
 
@@ -143,38 +143,14 @@ export default {
           password: user.password
         };
 
-        fetch(SIGNUP_URL, {
-          method: 'POST',
-          body: JSON.stringify(body),
-          headers: {
-            'content-type': 'application/json'
-          }
-        })
-          .then((res) => {
-            if (res.ok) {
-              return res.json();
-            }
-
-            return res.json().then((err) => {
-              throw new Error(err.message);
-            });
-          })
-          .then((res) => {
-            this.signingUp = false;
-            localStorage.setItem('token', res.token);
-            this.$router.push('/dashboard');
-          })
-          .catch((err) => {
-            this.signingUp = false;
-            this.errorMessage = err.message;
-          });
+        this.signUp(body);
       }
       this.signingUp = false;
     },
     validUser() {
       const { user } = this;
       if (user.password !== user.confirmPassword) {
-        this.errorMessage = 'Both passwords must match.';
+        this.setErrorMessage('Both passwords must match.');
         return false;
       }
 
@@ -182,9 +158,9 @@ export default {
 
       if (error) {
         if (error.message.includes('username')) {
-          this.errorMessage = 'Username is invalid.';
+          this.setErrorMessage('Username is invalid.');
         } else {
-          this.errorMessage = 'Password is invalid.';
+          this.setErrorMessage('Password is invalid.');
         }
         return false;
       }
