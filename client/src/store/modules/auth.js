@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SIGNUP_URL } from '@/config/api-urls';
+import { LOGIN_URL, SIGNUP_URL } from '@/config/api-urls';
 
 const authModule = {
   namespaced: true,
@@ -21,6 +21,15 @@ const authModule = {
     async signUp({ commit }, payload) {
       try {
         const data = await axios.post(SIGNUP_URL, payload);
+        commit('updateUser', data.data);
+        commit('setErrorMessage', '');
+      } catch (error) {
+        commit('setErrorMessage', error.response.data.message || error.message);
+      }
+    },
+    async signIn({ commit }, payload) {
+      try {
+        const data = await axios.post(LOGIN_URL, payload);
         commit('updateUser', data.data);
         commit('setErrorMessage', '');
       } catch (error) {

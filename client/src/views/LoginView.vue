@@ -18,7 +18,7 @@
         {{ errorMessage }}
       </div>
 
-      <form data-bitwarden-watching="1" @submit.prevent="login">
+      <form data-bitwarden-watching="1" @submit.prevent="submitHandler">
         <fieldset>
           <div class="form-group">
             <label class="form-label mt-4">Username</label>
@@ -75,8 +75,7 @@
 <script>
 // @ is an alias to /src
 import Joi from 'joi';
-
-const LOGIN_URL = 'http://localhost:5000/auth/login';
+import { mapActions, mapMutations, mapState } from 'vuex';
 
 const schema = Joi.object({
   username: Joi.string()
@@ -98,48 +97,36 @@ const schema = Joi.object({
 export default {
   name: 'LoginView',
   data: () => ({
-    errorMessage: '',
     logginIn: false,
     user: {
       username: '',
       password: ''
     }
   }),
+  watch: {
+    user: {
+      handler() {
+        this.setErrorMessage('');
+      },
+      deep: true
+    }
+  },
+  computed: {
+    ...mapState('auth', ['errorMessage'])
+  },
   methods: {
-    login() {
-      this.errorMessage = '';
+    ...mapMutations('auth', ['setErrorMessage']),
+    ...mapActions('auth', ['signIn']),
+    submitHandler() {
+      this.setErrorMessage('');
       this.logginIn = true;
 
       const { user } = this;
 
       if (this.validUser()) {
         const body = { username: user.username, password: user.password };
-
-        fetch(LOGIN_URL, {
-          method: 'POST',
-          body: JSON.stringify(body),
-          headers: {
-            'content-type': 'application/json'
-          }
-        })
-          .then((res) => {
-            if (res.ok) {
-              return res.json();
-            }
-
-            return res.json().then((err) => {
-              throw new Error(err.message);
-            });
-          })
-          .then((res) => {
-            this.logginIn = false;
-            localStorage.setItem('token', res.token);
-            this.$router.push('/dashboard');
-          })
-          .catch((err) => {
-            this.logginIn = false;
-            this.errorMessage = err.message;
-          });
+        this.signIn(body);
+        this.logginIn = false;
       }
     },
     validUser() {
@@ -147,9 +134,9 @@ export default {
 
       if (error) {
         if (error.message.includes('username')) {
-          this.errorMessage = 'Username is invalid.';
+          this.setErrorMessage('Username is invalid.');
         } else {
-          this.errorMessage = 'Password is invalid.';
+          this.setErrorMessage('Password is invalid.');
         }
         return false;
       }
