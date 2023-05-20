@@ -83,7 +83,6 @@ export default {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log({ res });
         if (res.user) {
           this.user = res.user;
           this.getNotes();

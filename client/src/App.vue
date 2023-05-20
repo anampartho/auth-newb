@@ -10,3 +10,27 @@
     <router-view class="container" />
   </div>
 </template>
+<script>
+import { mapActions, mapState } from 'vuex';
+
+export default {
+  name: 'App',
+  computed: {
+    ...mapState('auth', ['user'])
+  },
+  methods: {
+    ...mapActions('auth', ['validateUser'])
+  },
+  watch: {
+    user: {
+      handler() {
+        this.validateUser();
+      },
+      deep: true
+    }
+  },
+  beforeMount() {
+    this.validateUser();
+  }
+};
+</script>
