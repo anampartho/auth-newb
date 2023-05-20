@@ -43,7 +43,7 @@ const createTokenSendResponse = (user, res, next) => {
       if (err) {
         respondError422(res, next);
       } else {
-        res.json({ token });
+        res.json({ token, ...userPayload });
       }
     }
   );
