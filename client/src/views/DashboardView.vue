@@ -18,7 +18,7 @@
   <div class="dashboard">
     <div class="jumbotron jumbotron-fluid py-4 mt-4">
       <h1 class="display-4">Dashboard</h1>
-      <p class="lead" v-if="user.username">
+      <p class="lead" v-if="user?.username">
         Welcome <strong>{{ user?.username }} 👋</strong>
       </p>
       <p class="lead mt-4">
@@ -62,55 +62,45 @@
 
 <script>
 // @ is an alias to /src
+import axios from 'axios';
 import MarkdownIt from 'markdown-it';
 import MDEmoji from 'markdown-it-emoji';
-
-const API_URL = 'http://localhost:5000';
-const NOTES_URL = 'http://localhost:5000/api/v1/notes';
+import { mapActions, mapState } from 'vuex';
+import { NOTES_BASE_URL } from '@/config/api-urls';
 
 export default {
   name: 'DashboardView',
   data: () => ({
-    user: {},
     notes: []
   }),
+  computed: {
+    ...mapState('auth', ['user', 'loggedIn'])
+  },
   mounted() {
-    fetch(API_URL, {
-      method: 'GET',
-      headers: {
-        authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.user) {
-          this.user = res.user;
-          this.getNotes();
-        } else {
-          this.logout();
-        }
-      });
+    if (this.loggedIn) {
+      this.getNotes();
+    } else {
+      this.logout();
+    }
   },
   methods: {
+    ...mapActions('auth', ['logoutUser']),
     logout() {
-      localStorage.removeItem('token');
+      this.logoutUser();
       this.$router.push('/login');
     },
     goToAddNote() {
       this.$router.push('/notes/add');
     },
-    getNotes() {
-      fetch(NOTES_URL, {
-        method: 'GET',
-        headers: {
-          authorization: `Bearer ${localStorage.getItem('token')}`,
-          'content-type': 'application/json'
-        }
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          this.notes = res;
+    async getNotes() {
+      try {
+        const data = await axios.get(NOTES_BASE_URL, {
+          headers: { Authorization: `Bearer ${this.user.token}` }
         });
+        this.notes = data.data;
+      } catch (error) {
+        console.log(error);
+      }
     },
     renderMarkdown(text) {
       const md = new MarkdownIt();

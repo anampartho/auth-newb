@@ -12,7 +12,7 @@ const authModule = {
   },
   mutations: {
     updateUser(state, payload) {
-      state.user = { ...payload };
+      state.user = payload ? { ...payload } : payload;
     },
     setErrorMessage(state, payload) {
       state.errorMessage = payload;
@@ -51,6 +51,10 @@ const authModule = {
       } catch (error) {
         commit('setLoggedIn', false);
       }
+    },
+    logoutUser({ commit }) {
+      commit('setLoggedIn', false);
+      commit('updateUser', null);
     }
   }
 };
