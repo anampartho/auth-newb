@@ -6,14 +6,29 @@
         Welcome to this site where we implement authentication and authorization
         from scratch.
       </p>
-      <p class="lead mt-4">
+      <!-- <p class="lead mt-4">
         <router-link
+          v-if="!loggedIn"
           :to="{ name: 'signup' }"
           class="btn btn-primary btn-lg"
           role="button"
           >Sign Up</router-link
         >
-      </p>
+        <router-link
+          v-if="!loggedIn"
+          :to="{ name: 'login' }"
+          class="btn btn-primary btn-lg"
+          role="button"
+          >Log In</router-link
+        >
+        <router-link
+          v-if="loggedIn"
+          :to="{ name: 'dashboard' }"
+          class="btn btn-primary btn-lg"
+          role="button"
+          >Dashboard</router-link
+        >
+      </p> -->
     </div>
   </div>
 </template>

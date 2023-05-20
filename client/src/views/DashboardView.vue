@@ -21,16 +21,6 @@
       <p class="lead" v-if="user?.username">
         Welcome <strong>{{ user?.username }} 👋</strong>
       </p>
-      <p class="lead mt-4">
-        <a
-          class="btn btn-primary btn-lg"
-          role="button"
-          @click.prevent="logout"
-          @keydown.prevent="logout"
-          tabindex="0"
-          >Logout</a
-        >
-      </p>
     </div>
     <div class="container">
       <div class="row">
