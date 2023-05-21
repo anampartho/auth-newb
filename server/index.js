@@ -8,6 +8,7 @@ const app = express();
 
 const auth = require("./auth");
 const notes = require("./api/notes");
+const users = require("./api/users");
 const { checkTokenSetUser, isLoggedIn } = require("./auth/middlewares");
 
 app.use(volleyball);
@@ -25,6 +26,7 @@ app.get("/", (req, res) => {
 app.use("/auth", auth);
 
 app.use("/api/v1/notes", isLoggedIn, notes);
+app.use("/api/v1/users", users);
 
 function notFound(req, res, next) {
   res.status(404);
