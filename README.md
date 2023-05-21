@@ -83,6 +83,7 @@ Add JWT-based authentication to a Node/Express/Mongo app.
     - [x] Get all notes in DB with logged in users user_id
 - [x] List all notes on client
   - [x] Render description with Markdown
+- [ ] Replace bootswatch with [element-plus](https://element-plus.org/)
 
 ## STRETCH
 
