@@ -21,6 +21,7 @@
     "volleyball": "^1.5.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "prisma": "^4.14.1"
   }
 }
